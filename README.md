@@ -196,7 +196,7 @@ dsh-chat-mode/
 
 ## 发布版本与更新日志
 
-- **当前版本：`0.3.6`**（最近一次 GitHub Release 为 `v0.3.3`）；完整历史见根目录 [`CHANGELOG.md`](CHANGELOG.md)。
+- **当前版本：`0.3.6`**（最近一次 GitHub Release 为 `v0.3.6`）；完整历史见根目录 [`CHANGELOG.md`](CHANGELOG.md)。
 - **GitHub Releases**：https://github.com/3671656786/dsh-kakaka-chat/releases —— 每个 release 附本次更新日志与打包产物 `dsh-kakaka-chat-<version>.tgz`（离线分发用，**不是 npm 发布**）。
 - 从 Release 的 tgz 安装（可选）：
   ```
