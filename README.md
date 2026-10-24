@@ -168,7 +168,7 @@ DSH 的 PowerShell 执行器回退到了 Windows PowerShell 5.1，它在沙箱�
 
 - 仅验证 **DSH 0.2.1-rc.3**（Desktop / Web）。DSH 升级后 `@deepseek-ai/dsh-*` 包名或字段可能变化，本 bundle 需要跟随更新。
 - 人设里引用了咔咔珂（kakake）目录约定（`plugins/`、`使用教程/`、`log/` 等）；在其它项目里使用时这些指引不会自动适配，但不会报错。
-- 未附 LICENSE（私有仓库）；如要公开或再分发，请先补许可证并确认人设/文本的授权。
+- 已附 **MIT LICENSE**（GitHub 初始化仓库时生成，版权署名见 `LICENSE`）；再分发请保留版权声明。人设文本与咔咔珂相关表述的授权由维护者确认。
 - 安装用 `link:` / 本地目录方式，不是 npm 包；若未来发布 npm，需改包名（去掉 `@local/`）并去掉 `"private": true`。
 
 ## 开发
