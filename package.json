@@ -1,0 +1,25 @@
+{
+  "name": "@local/dsh-chat-preset",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "「对话模式」DeepSeek Harness Agent 预设：以咔咔珂（kakake）AI 助手为蓝本的对话/创作模式",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "agent-preset",
+    "chat-mode",
+    "kakake"
+  ],
+  "files": [
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "tools"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
