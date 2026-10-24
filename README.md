@@ -26,6 +26,15 @@
 - **DeepSeek Harness `0.2.1-rc.3`**（本预设在该版本上验证；其它版本可能因插件包名/字段变化而失效）
 - 安装 bundle 需要 **Full access 或审批**：安装会在 Host 进程里加载插件代码
 - 无需 npm 依赖：所有子插件（`@deepseek-ai/dsh-*`）由 DSH 本体提供
+- **Windows：必须安装 PowerShell 7（`pwsh.exe`）**。DSH 的 PowerShell 执行器在缺少 pwsh 时会回退到 Windows PowerShell 5.1，而 5.1 在 DSH 沙箱的受限令牌下启动即失败（`[exit code: 3225794]` / 0xC0000142），表现为「能改代码但跑不了校验」。安装后 DSH 会优先解析 `C:\Program Files\PowerShell\7\pwsh.exe`：
+
+  ```powershell
+  winget install --id Microsoft.PowerShell --exact --scope machine
+  # GitHub 直连慢时可改用清华镜像下载 MSI 后安装：
+  # https://mirrors.tuna.tsinghua.edu.cn/github-release/PowerShell/PowerShell/LatestRelease/
+  ```
+
+  装完若对话模式里 shell 仍报 0xC0000142，重启一次 DSH（执行器可能缓存了旧的 pwsh 解析）。
 
 ## 安装
 
@@ -71,6 +80,34 @@
 
 需要放宽时，改 `cordis.patch.yml` 里 `tool-fs.readLimit`（400–2000），再重新应用 bundle。
 
+### 自检与运行时探针
+
+改完代码后助手会**自己先跑校验**（不再要求你去控制台/终端代验）：
+
+| 检查 | 命令（工作区根目录） |
+|---|---|
+| 后端类型检查 | `node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit` |
+| 前端类型检查 | `node node_modules/typescript/bin/tsc -p src/web/tsconfig.json --noEmit` |
+| 单元测试 | `node --import tsx --test --test-concurrency=1 tests/*.test.ts` |
+| 单文件语法 | `node --check <文件>` |
+| 启动探测 | 后台 `node --import tsx src/main.ts` → 等 10~15s → 查 `/api/status` → 停进程 |
+
+排障时除了 `log/`，助手会主动查**咔咔珂管理 API**（服务在跑时）：
+
+```powershell
+$k=(Get-Content data/auth-key.json -Raw|ConvertFrom-Json).key
+$h=@{Authorization="Bearer $k"}
+Invoke-RestMethod http://127.0.0.1:8787/api/status                      # 版本/连接/插件概览（公开）
+Invoke-RestMethod http://127.0.0.1:8787/api/connections -Headers $h     # 连接与在线状态
+Invoke-RestMethod http://127.0.0.1:8787/api/Plugin/List -Headers $h     # 插件列表/加载状态
+Invoke-RestMethod http://127.0.0.1:8787/api/system/metrics -Headers $h # CPU/内存/磁盘/运行时长
+Invoke-RestMethod http://127.0.0.1:8787/api/logs -Headers $h            # 运行日志（JSON）
+```
+
+另有：`Get-Process node`、`Get-NetTCPConnection -State Listen`、`Test-NetConnection 127.0.0.1 -Port 8787`、`data/*.json`、`~/.dsh`、`%APPDATA%\@deepseek-ai\dsh-desktop\logs`。
+
+> 密钥规则：`data/auth-key.json` 里的 key 只允许用于调用本地 API，人设禁止把它打印、复述、写进文件或提交。
+
 ### 多上游模型
 
 预设不绑定模型。在 **设置 → Models**：
@@ -111,6 +148,9 @@ dsh-chat-mode/
 | `present` | `dsh-tool-present` | 交付文件 |
 
 ## 故障排查
+
+**shell 命令返回 `[exit code: 3221225794]`（0xC0000142）或「能改代码但跑不了校验」**
+DSH 的 PowerShell 执行器回退到了 Windows PowerShell 5.1，它在沙箱受限令牌下起不来。安装 **PowerShell 7**（见「环境要求」）后重启 DSH 再试；仍不行可临时把会话权限切到 Full access 验证是否沙箱问题。
 
 **「模式」卡片显示「加载失败」**
 预设组合审计失败。最可靠的办法是让一个临时 Host 插件把 `agentPresets.list()` 的 `broken` 字段写出来（本仓库初版就踩过：`plan-mode.config.section` 为空 → 整份预设 broken）。其它常见原因：

@@ -1,6 +1,6 @@
 {
   "name": "@local/dsh-chat-preset",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "「对话模式」DeepSeek Harness Agent 预设：以咔咔珂（kakake）AI 助手为蓝本的对话/创作模式",

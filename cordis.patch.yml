@@ -40,7 +40,7 @@
                 - 同一个目录反复 grep 超过 3 次仍无进展，就换 read 看具体文件，或直接告诉用户卡在哪。
                 - 改代码优先小步 edit，新建文件才用 write；改完跑一次相关校验（tsc / 测试 / 启动）再下结论。
                 - 不要臆造 API 或运行结果；拿不准就用工具验证或问用户。
-                - 密钥类文件（data/auth-key.json、data/connections.json、data/github-auth.json、data/ai/providers.json）不要读取、不要复述、不要写进回复。
+                - 密钥类文件（data/connections.json、data/github-auth.json、data/ai/providers.json）不要读取、不要复述、不要写进回复；data/auth-key.json 只允许在本地排障时取 key 调 127.0.0.1:8787 的 API，禁止打印、复述、写入文件或提交。
                 - 中文回答，结论先行；给出依据（文件:行号），最后总结「改了什么、为什么、怎么验证、下一步建议」。
 
                 ## 大文件与日志读取纪律（重要，仿咔咔珂）
@@ -51,6 +51,27 @@
                 - 同一个目录连续 grep 3 次仍无进展就停：改用 read 看具体文件，或直接问用户。
                 - 构建/测试等超大输出只保留结论行；需要全文时先写到文件，再用 grep 精确取。
                 - 如果工具结果被系统裁剪/摘要，说明这次取多了：改用更小的 limit 或更具体的关键词重取，不要重复同样的调用。
+
+                ## 自检与运行时状态（重要）
+                - 改完代码**必须自己先验证再报告完成**：没跑过就说没跑过，禁止假装验证过、也禁止把「请用户去控制台验一遍」当成默认流程。
+                - 后端类型检查：`node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit`
+                - 前端类型检查：`node node_modules/typescript/bin/tsc -p src/web/tsconfig.json --noEmit`
+                - 单元测试：`node --import tsx --test --test-concurrency=1 tests/*.test.ts`
+                - 单文件语法检查：`node --check <文件>`；插件是否真的能被加载，以「启动 + 管理 API/日志」为准。
+                - 启动探测：先 `Get-NetTCPConnection -LocalPort 8787 -State Listen` 确认端口空闲，再后台 `node --import tsx src/main.ts`，等 10~15 秒查 `/api/status`，验完停掉进程，不要长期留着。
+                - 运行时状态**优先查咔咔珂管理 API**（服务在跑时），不要只翻 log/：
+                  ```powershell
+                  $k=(Get-Content data/auth-key.json -Raw|ConvertFrom-Json).key
+                  $h=@{Authorization="Bearer $k"}
+                  Invoke-RestMethod http://127.0.0.1:8787/api/status                      # 版本/连接/插件概览（公开）
+                  Invoke-RestMethod http://127.0.0.1:8787/api/connections -Headers $h     # 连接与在线状态
+                  Invoke-RestMethod http://127.0.0.1:8787/api/Plugin/List -Headers $h     # 插件列表/加载状态
+                  Invoke-RestMethod http://127.0.0.1:8787/api/system/metrics -Headers $h # CPU/内存/磁盘/运行时长
+                  Invoke-RestMethod http://127.0.0.1:8787/api/logs -Headers $h            # 运行日志（JSON）
+                  ```
+                - 进程/端口：`Get-Process node`、`Get-NetTCPConnection -State Listen`、`Test-NetConnection 127.0.0.1 -Port 8787`。
+                - 其它运行时事实：`data/*.json`（密钥文件除外）、`log/`、DSH 侧 `~/.dsh`（sessions/profiles/storages）与 `%APPDATA%\@deepseek-ai\dsh-desktop\logs`。
+                - 若 `pwsh` 返回 `[exit code: 3221225794]`（0xC0000142）或命令整体失败：先用 `pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion'` 确认是 7.x（DSH 沙箱下 Windows PowerShell 5.1 起不来）；仍失败就让用户重启 DSH（执行器可能缓存了旧解析）或把会话权限切到 Full access；不要因为执行不了就跳过验证，给出可复制命令让用户代跑并说明原因。
 
                 ## 上下文纪律（重要）
                 - 上下文逼近上限时系统会自动压缩旧历史（也可用 /compact 手动触发），压缩后细节会丢：所以每完成一个阶段，就把关键结论、已改文件、待办写成简短清单留在回复里。
