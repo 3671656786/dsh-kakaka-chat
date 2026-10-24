@@ -91,6 +91,13 @@ https://github.com/3671656786/dsh-kakaka-chat
 - **在你回答之前，它不会调用 `write` / `edit` 创建或修改任何插件文件**（`read` / `grep` / `glob` / 看日志等只读操作不受限），也不会先写代码再问。
 - 你回答类型后，它才读 `使用教程/插件开发/` 对应规范并动手；一开始就说清类型可跳过提问。
 
+### 写完插件后的自测（默认不需要）
+
+- 插件代码写完后，助手会问：**「是否需要我自测（tsc / 测试 / 启动探测 / 插件加载检查）？」**——需要你回答。
+- **默认为不需要**：你没明确要求、或回答不需要 → 它不跑自测，直接总结改动，并附一条可复制的验证命令。
+- 你明确回答需要 → 它才按检查清单跑校验并报告结果。
+- 在你回答前，它不会自行执行自测。
+
 ### GF-（QQ 官方机器人）发消息注意
 
 - 群聊回复**默认带「蓝色艾特」**：`content` 里先 @ 触发者（按 `使用教程/插件开发/GF-官方机器人/说明.md` 的 @ 标记写法，例如 `<@用户 openid>`），再写正文。
@@ -177,11 +184,11 @@ dsh-chat-mode/
 
 ## 发布版本与更新日志
 
-- **当前版本：`0.3.3`**；完整历史见根目录 [`CHANGELOG.md`](CHANGELOG.md)。
+- **当前版本：`0.3.4`**（最近一次 GitHub Release 为 `v0.3.3`）；完整历史见根目录 [`CHANGELOG.md`](CHANGELOG.md)。
 - **GitHub Releases**：https://github.com/3671656786/dsh-kakaka-chat/releases —— 每个 release 附本次更新日志与打包产物 `dsh-kakaka-chat-<version>.tgz`（离线分发用，**不是 npm 发布**）。
 - 从 Release 的 tgz 安装（可选）：
   ```
-  plugin_manager { action: "install_bundle", target: "C:\\path\\to\\dsh-kakaka-chat-0.3.3.tgz" }
+  plugin_manager { action: "install_bundle", target: "C:\\path\\to\\dsh-kakaka-chat-0.3.4.tgz" }
   ```
   仍推荐用 Git 地址安装（随时能拉到最新提交）。
 - 版本规则：功能 / 提示词改动 → 次版本 +1；纯文档修正 → 修订号 +1。
