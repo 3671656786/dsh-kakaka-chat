@@ -47,6 +47,7 @@ https://github.com/3671656786/dsh-kakaka-chat
 ```
 
 - 这是 **Git 地址**：DSH 会先用 `git ls-remote` 探测仓库、再用 `pnpm add` 拉取；安装后自动启用 bundle。界面上的「安装源」（npm 镜像）只对 npm 包名生效，对 Git 地址不生效。
+- 本仓库**未发布 npm**，请使用 Git 地址或本地目录安装；`package.json` 里的包名 `dsh-kakaka-chat` 只用于本地依赖记录（`private: true` 防止误发布）。
 - 安装/启用完成后：**新建会话** → Hero 区「模式」下拉 → 选 **对话模式**。
 - 更新：在插件页卸载后重新安装同一地址（或按方式二用本地目录重装后重新应用）。
 - 本机已验证：该地址通过 `install_bundle` 实测安装成功（`application: applied`、无 warnings、版本 0.2.1）。
@@ -69,7 +70,7 @@ https://github.com/3671656786/dsh-kakaka-chat
 4. 升级：改完目录内文件后重新 `install_bundle`，或 `set_bundle` 先关闭再开启该 bundle 让配置重新应用。已有会话保留它启动时的预设修订，新会话才用新配置。
 5. 卸载：
    ```
-   plugin_manager { action: "remove_bundle", target: "@local/dsh-chat-preset" }
+   plugin_manager { action: "remove_bundle", target: "dsh-kakaka-chat" }
    ```
 
 ## 使用
@@ -196,7 +197,7 @@ DSH 的 PowerShell 执行器解析顺序是 **`pwsh 7`（`C:\Program Files\Power
 - 仅验证 **DSH 0.2.1-rc.3**（Desktop / Web）。DSH 升级后 `@deepseek-ai/dsh-*` 包名或字段可能变化，本 bundle 需要跟随更新。
 - 人设里引用了咔咔珂（kakake）目录约定（`plugins/`、`使用教程/`、`log/` 等）；在其它项目里使用时这些指引不会自动适配，但不会报错。
 - 已附 **MIT LICENSE**（GitHub 初始化仓库时生成，版权署名见 `LICENSE`）；再分发请保留版权声明。人设文本与咔咔珂相关表述的授权由维护者确认。
-- 安装用 `link:` / 本地目录方式，不是 npm 包；若未来发布 npm，需改包名（去掉 `@local/`）并去掉 `"private": true`。
+- **未发布 npm**：以 Git 地址 / 本地目录分发；`package.json` 的 `private: true` 防止误发布。若未来要上 npm，改回公开包名并去掉 `private` 即可。
 
 ## 开发
 

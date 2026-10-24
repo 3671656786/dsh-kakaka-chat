@@ -1,5 +1,11 @@
 # 变更记录
 
+## 0.3.0 — 2026-10-24
+
+- 包名统一为 **`dsh-kakaka-chat`**（与 GitHub 仓库一致），版本 0.3.0。
+- 分发方式定为 **Git 地址 / 本地目录安装**，暂不发布 npm；恢复 `"private": true` 防止误发布。
+- README 更新卸载目标名（`dsh-kakaka-chat`）并注明「未发布 npm」；兼容性说明同步。
+
 ## 0.2.2 — 2026-10-24
 
 - 文档：补充 0xC0000142 的完整根因——DSH 的 pwsh 解析结果缓存到进程退出（`dsh-pwsh-local` 的 `resolvedPwshPath`）；给出「重启 DSH」与「profile 显式 `pwshPath`（免重启）」两种修法，并在「环境要求」中同步。
