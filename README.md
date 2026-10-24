@@ -38,9 +38,24 @@
 
 ## 安装
 
+### 方式一：DSH 界面安装（推荐）
+
+在 DSH 左侧 **插件 → 添加插件**，把下面的地址粘贴进输入框，点「安装」：
+
+```
+https://github.com/3671656786/dsh-kakaka-chat
+```
+
+- 这是 **Git 地址**：DSH 会先用 `git ls-remote` 探测仓库、再用 `pnpm add` 拉取；安装后自动启用 bundle。界面上的「安装源」（npm 镜像）只对 npm 包名生效，对 Git 地址不生效。
+- 安装/启用完成后：**新建会话** → Hero 区「模式」下拉 → 选 **对话模式**。
+- 更新：在插件页卸载后重新安装同一地址（或按方式二用本地目录重装后重新应用）。
+- 本机已验证：该地址通过 `install_bundle` 实测安装成功（`application: applied`、无 warnings、版本 0.2.1）。
+
+### 方式二：本地目录安装（开发/离线用）
+
 1. 克隆或下载本仓库到本地任意目录，例如：
    ```bash
-   git clone https://github.com/<你的用户名>/dsh-chat-mode.git
+   git clone https://github.com/3671656786/dsh-kakaka-chat.git
    ```
    目录里必须保留 `package.json` 与 `cordis.patch.yml`。
 2. 在 DSH 会话里让 Agent 用 `plugin_manager` 安装（target 用**绝对路径**）：

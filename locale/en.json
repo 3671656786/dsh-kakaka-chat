@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Chat Mode",
+    "description": "Kakake-style chat assistant for DeepSeek Harness: plugin authoring, debugging, log reading, automatic context compaction, switchable models."
+  }
+}

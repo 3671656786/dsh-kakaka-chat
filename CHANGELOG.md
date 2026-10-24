@@ -1,5 +1,12 @@
 # 变更记录
 
+## 0.2.1 — 2026-10-24
+
+- 新增插件显示元数据：`locale/zh.json`、`locale/en.json`（`meta.title` / `meta.description`）与 `icon.svg`，在 DSH 插件页显示为「对话模式 / Chat Mode」。
+- `package.json` 补充 `repository`、`exports`（`./locale/*.json`、`./icon`）与 `files`。
+- README 增加「DSH 界面安装」方式：插件页 → 添加插件 → 粘贴 `https://github.com/3671656786/dsh-kakaka-chat`。
+- 已用该 Git 地址实测安装成功（`application: applied`，pnpm 6.5s）。
+
 ## 0.2.0 — 2026-10-24
 
 - 新增「自检与运行时状态」规范：改完代码先自行跑后端/前端 `tsc`、单元测试、`node --check` 与启动探测，不再依赖用户手动验证。
