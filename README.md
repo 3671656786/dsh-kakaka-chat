@@ -34,7 +34,7 @@
   # https://mirrors.tuna.tsinghua.edu.cn/github-release/PowerShell/PowerShell/LatestRelease/
   ```
 
-  装完若对话模式里 shell 仍报 0xC0000142，重启一次 DSH（执行器可能缓存了旧的 pwsh 解析）。
+  装完若对话模式里 shell 仍报 0xC0000142：DSH 的 pwsh 解析结果会缓存到进程退出，需**重启 DSH**，或按「故障排查」在 profile 里显式配置 `pwshPath`（不用重启）。
 
 ## 安装
 
@@ -165,7 +165,19 @@ dsh-chat-mode/
 ## 故障排查
 
 **shell 命令返回 `[exit code: 3221225794]`（0xC0000142）或「能改代码但跑不了校验」**
-DSH 的 PowerShell 执行器回退到了 Windows PowerShell 5.1，它在沙箱受限令牌下起不来。安装 **PowerShell 7**（见「环境要求」）后重启 DSH 再试；仍不行可临时把会话权限切到 Full access 验证是否沙箱问题。
+
+DSH 的 PowerShell 执行器解析顺序是 **`pwsh 7`（`C:\Program Files\PowerShell\7\pwsh.exe`）→ PATH → Windows PowerShell 5.1**，但**解析结果会缓存到 DSH 进程退出**（`dsh-pwsh-local/lib/index.js` 的 `resolvedPwshPath`，只有 `pwshPath` 配置变化才重算）。因此：
+
+- 若 **DSH 启动时 pwsh 7 尚未安装**，执行器会缓存 5.1；之后即使装好 pwsh 7，同一进程内所有会话仍用缓存的 5.1 → 沙箱受限令牌下启动失败（0xC0000142）。
+- **修法一（推荐）**：装好 PowerShell 7 后**完全退出并重启 DSH**。
+- **修法二（不重启）**：在 profile 的 `cordis.patch.yml` 里显式钉住路径，DSH 会热重载并重新解析（本机实测生效）：
+  ```yaml
+  - id: pwsh-sandbox
+    name: "@deepseek-ai/dsh-pwsh-sandbox"
+    config:
+      pwshPath: "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+  ```
+- 仍失败可临时把会话权限切到 **Full access**，用来判断是否沙箱本身的问题。
 
 **「模式」卡片显示「加载失败」**
 预设组合审计失败。最可靠的办法是让一个临时 Host 插件把 `agentPresets.list()` 的 `broken` 字段写出来（本仓库初版就踩过：`plan-mode.config.section` 为空 → 整份预设 broken）。其它常见原因：

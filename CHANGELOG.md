@@ -1,5 +1,9 @@
 # 变更记录
 
+## 0.2.2 — 2026-10-24
+
+- 文档：补充 0xC0000142 的完整根因——DSH 的 pwsh 解析结果缓存到进程退出（`dsh-pwsh-local` 的 `resolvedPwshPath`）；给出「重启 DSH」与「profile 显式 `pwshPath`（免重启）」两种修法，并在「环境要求」中同步。
+
 ## 0.2.1 — 2026-10-24
 
 - 新增插件显示元数据：`locale/zh.json`、`locale/en.json`（`meta.title` / `meta.description`）与 `icon.svg`，在 DSH 插件页显示为「对话模式 / Chat Mode」。
