@@ -85,10 +85,11 @@ https://github.com/3671656786/dsh-kakaka-chat
 
 > DSH 没有咔咔珂那种输入框内的「本轮模式勾选」，以上是会话级切换。
 
-### 写插件前先确认类型
+### 写插件前先确认类型（硬性门禁）
 
 - 用户没说明是哪类插件（`kakake-` OneBot / `GF-` QQ 官方 / `WX-` 微信 / `ss-plugin-` KOOK 等 / `sssx-plugin-` 双生）时，助手会**先用 `ask_user_question` 询问**，不会默认猜一种直接写。
-- 用户已声明类型时，先读 `使用教程/插件开发/` 对应规范再动手。
+- **在你回答之前，它不会调用 `write` / `edit` 创建或修改任何插件文件**（`read` / `grep` / `glob` / 看日志等只读操作不受限），也不会先写代码再问。
+- 你回答类型后，它才读 `使用教程/插件开发/` 对应规范并动手；一开始就说清类型可跳过提问。
 
 ### GF-（QQ 官方机器人）发消息注意
 
@@ -173,6 +174,17 @@ dsh-chat-mode/
 | `tool-todo` | `dsh-tool-todo` | 待办 |
 | `tool-web` | `dsh-tool-web` | web_search / web_fetch |
 | `present` | `dsh-tool-present` | 交付文件 |
+
+## 发布版本与更新日志
+
+- **当前版本：`0.3.3`**；完整历史见根目录 [`CHANGELOG.md`](CHANGELOG.md)。
+- **GitHub Releases**：https://github.com/3671656786/dsh-kakaka-chat/releases —— 每个 release 附本次更新日志与打包产物 `dsh-kakaka-chat-<version>.tgz`（离线分发用，**不是 npm 发布**）。
+- 从 Release 的 tgz 安装（可选）：
+  ```
+  plugin_manager { action: "install_bundle", target: "C:\\path\\to\\dsh-kakaka-chat-0.3.3.tgz" }
+  ```
+  仍推荐用 Git 地址安装（随时能拉到最新提交）。
+- 版本规则：功能 / 提示词改动 → 次版本 +1；纯文档修正 → 修订号 +1。
 
 ## 故障排查
 
