@@ -100,15 +100,20 @@ https://github.com/3671656786/dsh-kakaka-chat
 
 ### GF-（QQ 官方机器人）发消息注意
 
-- 群聊回复**默认带「蓝色艾特」**，但必须用**当前 text-chain 标记**，放在 `content` / `markdown.content` 文本里：
-  ```text
-  <qqbot-at-user id="{成员 openid}" /> 再写正文
+- **蓝色艾特属于 Markdown 语法**：必须发 `msg_type: 2` 的 Markdown 消息，把标记写进 `markdown.content`：
+  ```js
+  await ctx.actions.call(`/v2/groups/${event.group_openid}/messages`, {
+    msg_type: 2,
+    markdown: { content: '<qqbot-at-user id="{成员 openid}" /> 正文' },
+    msg_id: event.id,   // 被动回复
+    msg_seq: 1,         // 同一 msg_id 多条回复要递增
+  });
   ```
-  群聊取 `event.author.member_openid`，单聊取 `user_openid`；明文与 Markdown 都支持。
-- **不要用旧格式 `<@openid>` / `<@!openid>`**：QQ 会把它当普通文本原样显示（实测群里直接漏出 `<@EE39...>`），不是蓝色艾特。
+  群聊 openid 取 `event.author.member_openid`，单聊取 `user_openid`；`markdown.content` 与 `content` **互斥**（msg_type=2 时 `content` 必须为空）。
+- **不要把标记放进 `msg_type: 0` 的纯文本 `content`**：不会解析，会原样显示（实测 `<qqbot-at-user .../>` 直接漏出来；旧格式 `<@openid>` / `<@!openid>` 也已弃用）。
 - `@全体` 用 `<qqbot-at-everyone />`（仅文本子频道）。
-- 不 @ 时，机器人若未开通「主动消息」权限会直接发不出去（`40034105 主动消息无权限`）；被动回复仍需带 `msg_id` + 递增的 `msg_seq`。
-- 参考：[QQ 官方文本链（text-chain）文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/trans/text-chain.html)；AstrBot 的对应修复 PR 也记录了旧格式已弃用。
+- 不 @ 时，机器人若未开通「主动消息」权限会直接发不出去（`40034105 主动消息无权限`）。
+- 参考：[QQ 官方 Markdown 消息文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/type/markdown.html)、[text-chain 文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/trans/text-chain.html)。
 - `sssx-plugin-` 双生插件走官方协议分支时同样适用。
 
 ### 大文件与日志读取（仿咔咔珂）
@@ -191,11 +196,11 @@ dsh-chat-mode/
 
 ## 发布版本与更新日志
 
-- **当前版本：`0.3.5`**（最近一次 GitHub Release 为 `v0.3.3`）；完整历史见根目录 [`CHANGELOG.md`](CHANGELOG.md)。
+- **当前版本：`0.3.6`**（最近一次 GitHub Release 为 `v0.3.3`）；完整历史见根目录 [`CHANGELOG.md`](CHANGELOG.md)。
 - **GitHub Releases**：https://github.com/3671656786/dsh-kakaka-chat/releases —— 每个 release 附本次更新日志与打包产物 `dsh-kakaka-chat-<version>.tgz`（离线分发用，**不是 npm 发布**）。
 - 从 Release 的 tgz 安装（可选）：
   ```
-  plugin_manager { action: "install_bundle", target: "C:\\path\\to\\dsh-kakaka-chat-0.3.5.tgz" }
+  plugin_manager { action: "install_bundle", target: "C:\\path\\to\\dsh-kakaka-chat-0.3.6.tgz" }
   ```
   仍推荐用 Git 地址安装（随时能拉到最新提交）。
 - 版本规则：功能 / 提示词改动 → 次版本 +1；纯文档修正 → 修订号 +1。

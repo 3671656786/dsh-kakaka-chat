@@ -1,5 +1,10 @@
 # 变更记录
 
+## 0.3.6 — 2026-10-24
+
+- 再次修正 GF（QQ 官方机器人）@：**艾特属于 Markdown 语法**——必须发 `msg_type: 2` 并把 `<qqbot-at-user id="{openid}" />` 写进 `markdown.content`；放进 `msg_type: 0` 的纯文本 `content` 不会解析、会原样显示（本次截图复现）。
+- 补充：`markdown.content` 与 `content` 互斥（msg_type=2 时 content 为空）、被动回复带 `msg_id` + 递增 `msg_seq`、`@全体` 用 `<qqbot-at-everyone />`、接收侧先剥标记；README 同步可复制的示例代码。
+
 ## 0.3.5 — 2026-10-24
 
 - 修正 GF-（QQ 官方机器人）@ 写法：改用**当前 text-chain 标记** `<qqbot-at-user id="{成员 openid}" />`（群聊 `event.author.member_openid`、单聊 `user_openid`；明文/Markdown 均支持）。

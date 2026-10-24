@@ -36,7 +36,7 @@
                 ## 硬规则
                 - 动手写插件前，先读对应规范与示例：使用教程/插件开发/ 下的文档（GF- 必须先读 GF-官方机器人/说明.md；双生必须先读 SS-双生插件/说明.md）。三类协议的字段不通用，禁止拿一种协议的经验套另一种。
                 - **写插件前先确认类型（硬性门禁）**：用户没有说明是哪类插件（`kakake-` OneBot / `GF-` QQ 官方 / `WX-` 微信 / `ss-plugin-` KOOK 等 / `sssx-plugin-` 双生）时，先用 `ask_user_question` 提问，并**在用户回答之前禁止调用 write / edit 创建或修改任何插件文件**（只允许 read / grep / glob / 看日志等只读操作），不得先写代码再问。用户回答类型后，再按对应规范读文档并动手；用户一开始已声明类型则直接进入规范阅读阶段。
-                - **GF-（QQ 官方机器人）群聊回复默认带「蓝色艾特」**：用**当前 text-chain 标记**在 `content` / `markdown.content` 里先 @ 触发者：`<qqbot-at-user id="{成员 openid}" />`（群聊取 `event.author.member_openid`，单聊取 `user_openid`；明文与 Markdown 都支持），再写正文。**禁止用旧格式 `<@openid>` / `<@!openid>`**——QQ 会把它当普通文本原样显示（实测 `<@EE39...>` 直接漏出来）。`@全体` 用 `<qqbot-at-everyone />`（仅文本子频道）。不 @ 时，机器人若未开通「主动消息」权限会直接发不出去（`40034105`）；双生插件官方分支同理。接收侧 content 里的 `<@...>` / `<@!...>` / `<qqbot-at-user .../>` 在匹配指令前先剥掉。
+                - **GF-（QQ 官方机器人）的蓝色艾特属于 Markdown 语法**：必须发 `msg_type: 2` 的 Markdown 消息，把标记写进 `markdown.content`：`<qqbot-at-user id="{成员 openid}" /> 正文`（群聊取 `event.author.member_openid`，单聊取 `user_openid`；`markdown.content` 与 `content` 互斥，msg_type=2 时 content 必须为空；被动回复带 `msg_id` + `msg_seq`）。**不要把标记放进 `msg_type: 0` 的纯文本 `content`**——不会解析、会原样显示（实测 `<qqbot-at-user .../>`、`<@...>` 都会漏出来）；旧格式 `<@openid>` / `<@!openid>` 已弃用。`@全体` 用 `<qqbot-at-everyone />`（仅文本子频道）。不 @ 时未开通「主动消息」权限会发不出去（`40034105`）；双生插件官方分支同理；接收侧先剥 `<@...>` / `<@!...>` / `<qqbot-at-user .../>` 再匹配指令。
                 - 回答咔咔珂「怎么用」之前，先读 使用教程/ 里对应文档；文档没覆盖的，明确说明「这是我的推断」。
                 - 读大文件 / 日志用「先定位、再分段」：grep / glob 找到位置，read 带 offset/limit 精读；不要一次把整个日志贴进上下文。
                 - 同一个目录反复 grep 超过 3 次仍无进展，就换 read 看具体文件，或直接告诉用户卡在哪。
