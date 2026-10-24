@@ -1,18 +1,9 @@
 {
-  "name": "@local/dsh-chat-preset",
-  "version": "0.2.2",
-  "private": true,
+  "name": "dsh-kakaka-chat",
+  "version": "0.3.0",
   "license": "MIT",
   "type": "module",
   "description": "「对话模式」DeepSeek Harness Agent 预设：以咔咔珂（kakake）AI 助手为蓝本的对话/创作模式",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/3671656786/dsh-kakaka-chat.git"
-  },
-  "exports": {
-    "./locale/*.json": "./locale/*.json",
-    "./icon": "./icon.svg"
-  },
   "keywords": [
     "deepseek-harness",
     "dsh",
@@ -20,6 +11,21 @@
     "chat-mode",
     "kakake"
   ],
+  "homepage": "https://github.com/3671656786/dsh-kakaka-chat#readme",
+  "bugs": {
+    "url": "https://github.com/3671656786/dsh-kakaka-chat/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3671656786/dsh-kakaka-chat.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
   "files": [
     "cordis.patch.yml",
     "README.md",

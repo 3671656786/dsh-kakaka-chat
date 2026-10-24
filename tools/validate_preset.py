@@ -48,8 +48,20 @@ with open(os.path.join(BASE, "package.json"), encoding="utf-8") as f:
     pkg = json.load(f)
 if pkg.get("type") != "module":
     err("package.json: type 必须是 module")
-if not pkg.get("private"):
-    err("package.json: private 应为 true（本地 bundle，避免误发布）")
+pkg_name = pkg.get("name", "")
+if pkg_name.startswith("@local/"):
+    if not pkg.get("private"):
+        err("package.json: @local/ 本地 bundle 应保持 private: true")
+else:
+    # 准备发布到 npm 的包：不能 private，且需 license / repository
+    if pkg.get("private"):
+        err("package.json: 可发布的包不能 private: true")
+    if not pkg.get("license"):
+        err("package.json: 可发布包应声明 license")
+    if not pkg.get("repository"):
+        err("package.json: 可发布包应声明 repository")
+    if not re.match(r"^\d+\.\d+\.\d+", str(pkg.get("version", ""))):
+        err("package.json: version 应为 semver")
 patch_rel = (pkg.get("dsh") or {}).get("bundle", {}).get("patch")
 if not patch_rel:
     err("package.json: 缺少 dsh.bundle.patch")
